@@ -54,7 +54,7 @@
 Name: tomcat6
 Epoch: 0
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 0.%mkrel 1
+Release: 0.%mkrel 2
 Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group: Development/Java
@@ -325,13 +325,12 @@ popd
 
 %pre
 # add the tomcat user and group
-%{_sbindir}/groupadd -g %{tcuid} -r tomcat 2>/dev/null || :
-%{_sbindir}/useradd -c "Apache Tomcat" -u %{tcuid} -g tomcat \
-    -s /bin/sh -r -d %{homedir} tomcat 2>/dev/null || :
+%_pre_useradd  tomcat  %{homedir} /bin/sh 
+%_pre_groupadd tomcat tomcat
 
 %post
 # install but don't activate
-/sbin/chkconfig --add %{name}
+%_post_service %{name}
 
 %post jsp-%{jspspec}-api
 %{_sbindir}/update-alternatives --install %{_javadir}/jsp.jar jsp \
@@ -352,10 +351,7 @@ popd
 %preun
 # clean tempdir and workdir on removal or upgrade
 %{__rm} -rf %{workdir}/* %{tempdir}/*
-if [ "$1" = "0" ]; then
-    %{_initrddir}/%{name} stop >/dev/null 2>&1
-    /sbin/chkconfig --del %{name}
-fi
+%_preun_service %{name}
 
 %preun lib
 if [ "$1" = "0" ]; then
@@ -364,6 +360,10 @@ if [ "$1" = "0" ]; then
         %{libdir}/\[commons-pool-tomcat5\].jar \
         %{libdir}/\[ecj\].jar >/dev/null 2>&1
 fi
+
+%postun
+%_postun_userdel tomcat
+%_postun_groupdel tomcat tomcat
 
 %postun jsp-%{jspspec}-api
 if [ "$1" = "0" ]; then
