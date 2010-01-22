@@ -33,7 +33,7 @@
 %define jspspec 2.1
 %define major_version 6
 %define minor_version 0
-%define micro_version 20
+%define micro_version 24
 %define packdname apache-tomcat-%{version}-src
 %define servletspec 2.5
 %define tcuid 91
@@ -54,7 +54,7 @@
 Name: tomcat6
 Epoch: 0
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 0.%mkrel 2
+Release: 0.%mkrel 1
 Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group: Development/Java
