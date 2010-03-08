@@ -54,7 +54,7 @@
 Name: tomcat6
 Epoch: 0
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 0.%mkrel 1
+Release: 0.%mkrel 2
 Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group: Development/Java
@@ -142,7 +142,6 @@ Summary: Libraries needed to run the Tomcat Web container
 Requires: %{name}-jsp-%{jspspec}-api = %{epoch}:%{version}-%{release}
 Requires: %{name}-servlet-%{servletspec}-api = %{epoch}:%{version}-%{release}
 Requires(post): ecj
-Requires(post): %{_javadir}/ecj.jar
 Requires(post): jakarta-commons-collections-tomcat5
 Requires(post): jakarta-commons-dbcp-tomcat5
 Requires(post): jakarta-commons-pool-tomcat5
