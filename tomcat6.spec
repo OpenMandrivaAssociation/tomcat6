@@ -54,7 +54,7 @@
 Name: tomcat6
 Epoch: 0
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 0.%mkrel 1
+Release: 0.%mkrel 2
 Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group: Development/Java
@@ -70,6 +70,7 @@ Source6: %{name}-%{major_version}.%{minor_version}-digest.script
 Source7: %{name}-%{major_version}.%{minor_version}-tool-wrapper.script
 Patch0: %{name}-%{major_version}.%{minor_version}-bootstrap-MANIFEST.MF.patch
 Patch1: %{name}-%{major_version}.%{minor_version}-tomcat-users-webapp.patch
+Patch2: %{name}-%{major_version}.%{minor_version}-CVE-2010-2227.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
@@ -179,6 +180,7 @@ find . -type f \( -name "*.bat" -o -name "*.class" -o -name Thumbs.db -o -name "
 pushd %{packdname}
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0
 popd
 
 %build
