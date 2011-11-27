@@ -52,7 +52,7 @@
 
 Name:          tomcat6
 Version:       %{major_version}.%{minor_version}.%{micro_version}
-Release:       9
+Release:       11
 Summary:       Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group:         Networking/WWW
