@@ -261,60 +261,60 @@ zip -u output/build/lib/jsp-api.jar META-INF/MANIFEST.MF
 
 %install
 # build initial path structure
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{_bindir}
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{_sbindir}
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{_javadocdir}/%{name}
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{_initrddir}
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{appdir}
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{bindir}
-%{__install} -d -m 0775 ${RPM_BUILD_ROOT}%{confdir}
-%{__install} -d -m 0775 ${RPM_BUILD_ROOT}%{confdir}/Catalina/localhost
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{libdir}
-%{__install} -d -m 0775 ${RPM_BUILD_ROOT}%{logdir}
-/bin/touch ${RPM_BUILD_ROOT}%{logdir}/catalina.out
-%{__install} -d -m 0775 ${RPM_BUILD_ROOT}%{homedir}
-%{__install} -d -m 0775 ${RPM_BUILD_ROOT}%{tempdir}
-%{__install} -d -m 0775 ${RPM_BUILD_ROOT}%{workdir}
+%{__install} -d -m 0755 %{buildroot}%{_bindir}
+%{__install} -d -m 0755 %{buildroot}%{_sbindir}
+%{__install} -d -m 0755 %{buildroot}%{_javadocdir}/%{name}
+%{__install} -d -m 0755 %{buildroot}%{_initrddir}
+%{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/logrotate.d
+%{__install} -d -m 0755 %{buildroot}%{_sysconfdir}/sysconfig
+%{__install} -d -m 0755 %{buildroot}%{appdir}
+%{__install} -d -m 0755 %{buildroot}%{bindir}
+%{__install} -d -m 0775 %{buildroot}%{confdir}
+%{__install} -d -m 0775 %{buildroot}%{confdir}/Catalina/localhost
+%{__install} -d -m 0755 %{buildroot}%{libdir}
+%{__install} -d -m 0775 %{buildroot}%{logdir}
+/bin/touch %{buildroot}%{logdir}/catalina.out
+%{__install} -d -m 0775 %{buildroot}%{homedir}
+%{__install} -d -m 0775 %{buildroot}%{tempdir}
+%{__install} -d -m 0775 %{buildroot}%{workdir}
 
 # move things into place
 # First copy supporting libs to tomcat lib
 pushd output/build
-    %{__cp} -a bin/*.{jar,xml} ${RPM_BUILD_ROOT}%{bindir}
+    %{__cp} -a bin/*.{jar,xml} %{buildroot}%{bindir}
     %{__cp} %{SOURCE10} conf/log4j.properties
-    %{__cp} -a conf/*.{policy,properties,xml} ${RPM_BUILD_ROOT}%{confdir}
-    %{__cp} -a lib/*.jar ${RPM_BUILD_ROOT}%{libdir}
-    %{__cp} -a webapps/* ${RPM_BUILD_ROOT}%{appdir}
+    %{__cp} -a conf/*.{policy,properties,xml} %{buildroot}%{confdir}
+    %{__cp} -a lib/*.jar %{buildroot}%{libdir}
+    %{__cp} -a webapps/* %{buildroot}%{appdir}
 popd
 # javadoc
-%{__cp} -a output/dist/webapps/docs/api/* ${RPM_BUILD_ROOT}%{_javadocdir}/%{name}
+%{__cp} -a output/dist/webapps/docs/api/* %{buildroot}%{_javadocdir}/%{name}
 
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
    -e "s|\@\@\@TCTEMP\@\@\@|%{tempdir}|g" \
    -e "s|\@\@\@LIBDIR\@\@\@|%{_libdir}|g" %{SOURCE1} \
-    > ${RPM_BUILD_ROOT}%{confdir}/%{name}.conf
+    > %{buildroot}%{confdir}/%{name}.conf
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
    -e "s|\@\@\@TCTEMP\@\@\@|%{tempdir}|g" \
    -e "s|\@\@\@LIBDIR\@\@\@|%{_libdir}|g" %{SOURCE3} \
-    > ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig/%{name}
+    > %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 %{__install} -m 0644 %{SOURCE2} \
-    ${RPM_BUILD_ROOT}%{_initrddir}/%{name}
+    %{buildroot}%{_initrddir}/%{name}
 %{__install} -m 0644 %{SOURCE4} \
-    ${RPM_BUILD_ROOT}%{_sbindir}/%{name}
-%{__ln_s} %{name} ${RPM_BUILD_ROOT}%{_sbindir}/d%{name}
+    %{buildroot}%{_sbindir}/%{name}
+%{__ln_s} %{name} %{buildroot}%{_sbindir}/d%{name}
 %{__sed} -e "s|\@\@\@TCLOG\@\@\@|%{logdir}|g" %{SOURCE5} \
-    > ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d/%{name}
+    > %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
    -e "s|\@\@\@TCTEMP\@\@\@|%{tempdir}|g" \
    -e "s|\@\@\@LIBDIR\@\@\@|%{_libdir}|g" %{SOURCE6} \
-    > ${RPM_BUILD_ROOT}%{_bindir}/%{name}-digest
+    > %{buildroot}%{_bindir}/%{name}-digest
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
    -e "s|\@\@\@TCTEMP\@\@\@|%{tempdir}|g" \
    -e "s|\@\@\@LIBDIR\@\@\@|%{_libdir}|g" %{SOURCE7} \
-    > ${RPM_BUILD_ROOT}%{_bindir}/%{name}-tool-wrapper
+    > %{buildroot}%{_bindir}/%{name}-tool-wrapper
 # create jsp and servlet API symlinks
-pushd ${RPM_BUILD_ROOT}%{_javadir}
+pushd %{buildroot}%{_javadir}
    %{__mv} %{name}/jsp-api.jar %{name}-jsp-%{jspspec}-api.jar
    %{__ln_s} %{name}-jsp-%{jspspec}-api.jar %{name}-jsp-api.jar
    %{__mv} %{name}/servlet-api.jar %{name}-servlet-%{servletspec}-api.jar
@@ -334,7 +334,7 @@ pushd output/build
     taglibs-core.jar taglibs-standard.jar 2>&1
 popd
 
-pushd ${RPM_BUILD_ROOT}%{libdir}
+pushd %{buildroot}%{libdir}
     # symlink JSP and servlet API jars
     %{__ln_s} ../%{name}-jsp-%{jspspec}-api.jar .
     %{__ln_s} ../%{name}-servlet-%{servletspec}-api.jar .
@@ -350,7 +350,7 @@ pushd ${RPM_BUILD_ROOT}%{libdir}
 popd
 
 # symlink to the FHS locations where we've installed things
-pushd ${RPM_BUILD_ROOT}%{homedir}
+pushd %{buildroot}%{homedir}
     %{__ln_s} %{appdir} webapps
     %{__ln_s} %{confdir} conf
     %{__ln_s} %{libdir} lib
@@ -360,11 +360,11 @@ pushd ${RPM_BUILD_ROOT}%{homedir}
 popd
 
 # install sample webapp
-%{__mkdir_p} ${RPM_BUILD_ROOT}%{appdir}/sample
-pushd ${RPM_BUILD_ROOT}%{appdir}/sample
-%{jar} xf ${RPM_BUILD_ROOT}%{appdir}/docs/appdev/sample/sample.war
+%{__mkdir_p} %{buildroot}%{appdir}/sample
+pushd %{buildroot}%{appdir}/sample
+%{jar} xf %{buildroot}%{appdir}/docs/appdev/sample/sample.war
 popd
-%{__rm} ${RPM_BUILD_ROOT}%{appdir}/docs/appdev/sample/sample.war
+%{__rm} %{buildroot}%{appdir}/docs/appdev/sample/sample.war
 
 
 # Generate a depmap fragment javax.servlet:servlet-api pointing to
@@ -375,7 +375,7 @@ popd
 mv %{buildroot}%{_mavendepmapfragdir}/%{name} %{buildroot}%{_mavendepmapfragdir}/%{name}-servlet-api
 
 # Install the maven metadata
-%{__install} -d -m 0755 ${RPM_BUILD_ROOT}%{_mavenpomdir}
+%{__install} -d -m 0755 %{buildroot}%{_mavenpomdir}
 pushd output/dist/src/res/maven
 for pom in *.pom; do
     # fix-up version in all pom files
@@ -385,23 +385,23 @@ done
 # we won't install dbcp, juli-adapters and juli-extras pom files
 for pom in catalina.pom jasper-el.pom jasper.pom \
            catalina-ha.pom ; do
-    %{__cp} -a $pom ${RPM_BUILD_ROOT}%{_mavenpomdir}/JPP.%{name}-$pom
+    %{__cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-$pom
     base=`basename $pom .pom`
     %add_to_maven_depmap org.apache.tomcat $base %{version} JPP/%{name} $base
 done
 
 # servlet-api jsp-api and el-api are not in tomcat6 subdir, since they are widely re-used elsewhere
 for pom in jsp-api.pom servlet-api.pom el-api.pom;do
-    %{__cp} -a $pom ${RPM_BUILD_ROOT}%{_mavenpomdir}/JPP-%{name}-$pom
+    %{__cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP-%{name}-$pom
     base=`basename $pom .pom`
     %add_to_maven_depmap org.apache.tomcat $base %{version} JPP %{name}-$base
 done
 
 # two special pom where jar files have different names
-%{__cp} -a tribes.pom ${RPM_BUILD_ROOT}%{_mavenpomdir}/JPP.%{name}-catalina-tribes.pom
+%{__cp} -a tribes.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-catalina-tribes.pom
 %add_to_maven_depmap org.apache.tomcat tribes %{version} JPP/%{name} catalina-tribes
 
-%{__cp} -a juli.pom ${RPM_BUILD_ROOT}%{_mavenpomdir}/JPP.%{name}-tomcat-juli.pom
+%{__cp} -a juli.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-tomcat-juli.pom
 %add_to_maven_depmap org.apache.tomcat juli %{version} JPP/%{name} tomcat-juli
 
 
