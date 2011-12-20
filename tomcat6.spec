@@ -28,6 +28,10 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+# https://qa.mandriva.com/show_bug.cgi?id=64975
+%define my_cp			/bin/cp
+%define my_tmppath		/var/tmp
+
 %global jspspec 2.1
 %global major_version 6
 %global minor_version 0
@@ -52,7 +56,7 @@
 
 Name:          tomcat6
 Version:       %{major_version}.%{minor_version}.%{micro_version}
-Release:       11
+Release:       12
 Summary:       Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group:         Networking/WWW
@@ -81,21 +85,22 @@ BuildRequires: ant
 BuildRequires: ant-nodeps
 BuildRequires: ecj
 BuildRequires: findutils
-BuildRequires: jakarta-commons-collections
-BuildRequires: jakarta-commons-daemon
-BuildRequires: jakarta-commons-dbcp
-BuildRequires: jakarta-commons-pool
+BuildRequires: apache-commons-collections
+BuildRequires: apache-commons-daemon
+BuildRequires: apache-commons-dbcp
+BuildRequires: apache-commons-pool
 BuildRequires: jakarta-taglibs-standard
 BuildRequires: java-1.6.0-devel
 BuildRequires: jpackage-utils >= 0:1.7.0
 BuildRequires: junit
 BuildRequires: log4j
-Requires:      jakarta-commons-daemon
-Requires:      jakarta-commons-logging
-Requires:      jakarta-commons-collections
-Requires:      jakarta-commons-dbcp
-Requires:      jakarta-commons-pool
+Requires:      apache-commons-daemon
+Requires:      apache-commons-logging
+Requires:      apache-commons-collections
+Requires:      apache-commons-dbcp
+Requires:      apache-commons-pool
 Requires:      java-1.6.0
+Requires:      lsb-release
 Requires:      procps
 Requires:      %{name}-lib = %{version}-%{release}
 Requires(pre):    shadow-utils
@@ -161,9 +166,9 @@ Requires: %{name}-jsp-%{jspspec}-api = %{version}-%{release}
 Requires: %{name}-servlet-%{servletspec}-api = %{version}-%{release}
 Requires: %{name}-el-%{elspec}-api = %{version}-%{release}
 Requires: ecj
-Requires: jakarta-commons-collections
-Requires: jakarta-commons-dbcp
-Requires: jakarta-commons-pool
+Requires: apache-commons-collections
+Requires: apache-commons-dbcp
+Requires: apache-commons-pool
 Requires(preun): coreutils
 
 %description lib
@@ -281,14 +286,14 @@ zip -u output/build/lib/jsp-api.jar META-INF/MANIFEST.MF
 # move things into place
 # First copy supporting libs to tomcat lib
 pushd output/build
-    %{__cp} -a bin/*.{jar,xml} %{buildroot}%{bindir}
-    %{__cp} %{SOURCE10} conf/log4j.properties
-    %{__cp} -a conf/*.{policy,properties,xml} %{buildroot}%{confdir}
-    %{__cp} -a lib/*.jar %{buildroot}%{libdir}
-    %{__cp} -a webapps/* %{buildroot}%{appdir}
+    %{my_cp} -a bin/*.{jar,xml} %{buildroot}%{bindir}
+    %{my_cp} %{SOURCE10} conf/log4j.properties
+    %{my_cp} -a conf/*.{policy,properties,xml} %{buildroot}%{confdir}
+    %{my_cp} -a lib/*.jar %{buildroot}%{libdir}
+    %{my_cp} -a webapps/* %{buildroot}%{appdir}
 popd
 # javadoc
-%{__cp} -a output/dist/webapps/docs/api/* %{buildroot}%{_javadocdir}/%{name}
+%{my_cp} -a output/dist/webapps/docs/api/* %{buildroot}%{_javadocdir}/%{name}
 
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
    -e "s|\@\@\@TCTEMP\@\@\@|%{tempdir}|g" \
@@ -385,23 +390,23 @@ done
 # we won't install dbcp, juli-adapters and juli-extras pom files
 for pom in catalina.pom jasper-el.pom jasper.pom \
            catalina-ha.pom ; do
-    %{__cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-$pom
+    %{my_cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-$pom
     base=`basename $pom .pom`
     %add_to_maven_depmap org.apache.tomcat $base %{version} JPP/%{name} $base
 done
 
 # servlet-api jsp-api and el-api are not in tomcat6 subdir, since they are widely re-used elsewhere
 for pom in jsp-api.pom servlet-api.pom el-api.pom;do
-    %{__cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP-%{name}-$pom
+    %{my_cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP-%{name}-$pom
     base=`basename $pom .pom`
     %add_to_maven_depmap org.apache.tomcat $base %{version} JPP %{name}-$base
 done
 
 # two special pom where jar files have different names
-%{__cp} -a tribes.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-catalina-tribes.pom
+%{my_cp} -a tribes.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-catalina-tribes.pom
 %add_to_maven_depmap org.apache.tomcat tribes %{version} JPP/%{name} catalina-tribes
 
-%{__cp} -a juli.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-tomcat-juli.pom
+%{my_cp} -a juli.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-tomcat-juli.pom
 %add_to_maven_depmap org.apache.tomcat juli %{version} JPP/%{name} tomcat-juli
 
 
@@ -413,9 +418,9 @@ done
 # Save the conf, app, and lib dirs
 # due to rbgz 640686. Copy them to the _tmppath so we don't pollute
 # the tomcat file structure
-[ -d %{appdir} ] && %{__cp} -rp %{appdir} %{_tmppath}/%{name}-webapps.bak || :
-[ -d %{confdir} ] && %{__cp} -rp %{confdir} %{_tmppath}/%{name}-confdir.bak || :
-[ -d %{libdir}  ] && %{__cp} -rp %{libdir} %{_tmppath}/%{name}-libdir.bak || :
+[ -d %{appdir} ] && %{my_cp} -rp %{appdir} %{my_tmppath}/%{name}-webapps.bak || :
+[ -d %{confdir} ] && %{my_cp} -rp %{confdir} %{my_tmppath}/%{name}-confdir.bak || :
+[ -d %{libdir}  ] && %{my_cp} -rp %{libdir} %{my_tmppath}/%{name}-libdir.bak || :
 
 %post
 # install but don't activate
@@ -439,17 +444,23 @@ done
 # move the temporary backups to the correct tomcat directory
 # due to rhbz 640686
 %posttrans
-if [ -d %{_tmppath}/%{name}-webapps.bak ]; then
-  %{__cp} -rp %{_tmppath}/%{name}-webapps.bak/* %{appdir}
-  %{__rm} -rf %{_tmppath}/%{name}-webapps.bak
+if [ -d %{my_tmppath}/%{name}-webapps.bak ]; then
+  for f in `ls %{my_tmppath}/%{name}-webapps.bak`; do
+    %{my_cp} -rp %{my_tmppath}/%{name}-webapps.bak/$f %{appdir}
+  done
+  %{__rm} -rf %{my_tmppath}/%{name}-webapps.bak
 fi
-if [ -d %{_tmppath}/%{name}-libdir.bak ]; then
-  %{__cp} -rp %{_tmppath}/%{name}-libdir.bak/* %{libdir}
-  %{__rm} -rf %{_tmppath}/%{name}-libdir.bak
+if [ -d %{my_tmppath}/%{name}-libdir.bak ]; then
+  for f in `ls %{my_tmppath}/%{name}-libdir.bak`; do
+    %{my_cp} -rp %{my_tmppath}/%{name}-libdir.bak/$f %{libdir}
+  done
+  %{__rm} -rf %{my_tmppath}/%{name}-libdir.bak
 fi
-if [ -d %{_tmppath}/%{name}-confdir.bak ]; then
-  %{__cp} -rp %{_tmppath}/%{name}-confdir.bak/* %{confdir}
-  %{__rm} -rf %{_tmppath}/%{name}-confdir.bak
+if [ -d %{my_tmppath}/%{name}-confdir.bak ]; then
+  for f in `ls %{my_tmppath}/%{name}-confdir.bak`; do
+    %{my_cp} -rp %{my_tmppath}/%{name}-confdir.bak/$f %{confdir}
+  done
+  %{__rm} -rf %{my_tmppath}/%{name}-confdir.bak
 fi
 
 %preun
@@ -484,7 +495,6 @@ if [ "$1" = "0" ]; then
 fi
 
 %files
-%defattr(0664,root,tomcat,0775)
 %doc {LICENSE,NOTICE,RELEASE*}
 %attr(0755,root,root) %{_bindir}/%{name}-digest
 %attr(0755,root,root) %{_bindir}/%{name}-tool-wrapper
@@ -493,7 +503,8 @@ fi
 %attr(0755,root,root) %{_initrddir}/%{name}
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-%attr(0765,root,tomcat) %dir %{basedir}
+%attr(0775,root,tomcat) %dir %{basedir}
+%attr(0775,root,tomcat) %dir %{bindir}
 %attr(0775,root,tomcat) %dir %{appdir}
 %attr(0775,root,tomcat) %dir %{confdir}
 %attr(0775,root,tomcat) %dir %{confdir}/Catalina
@@ -523,47 +534,42 @@ fi
 %{homedir}/conf
 %{_mavendepmapfragdir}/%{name}
 %{_mavenpomdir}/*.pom
+%exclude %{_mavenpomdir}/JPP-tomcat6-el-api.pom
+%exclude %{_mavenpomdir}/JPP-tomcat6-jsp-api.pom
+%exclude %{_mavenpomdir}/JPP-tomcat6-servlet-api.pom
 
 %files admin-webapps
-%defattr(0664,root,tomcat,0775)
 %{appdir}/host-manager
 %{appdir}/manager
 
 %files docs-webapp
-%defattr(-,root,root,-)
 %{appdir}/docs
 
 %files javadoc
-%defattr(-,root,root,-)
 %{_javadocdir}/%{name}
 
 %files jsp-%{jspspec}-api
-%defattr(-,root,root,-)
 %{_javadir}/%{name}-jsp-%{jspspec}*.jar
 %{_javadir}/%{name}-jsp-api.jar
 %{_mavenpomdir}/JPP-%{name}-jsp-api.pom
 
 %files lib
-%defattr(-,root,root,-)
 %{libdir}
+%exclude %{libdir}/%{name}-el-%{elspec}-api.jar
 
 %files servlet-%{servletspec}-api
-%defattr(-,root,root,-)
 %{_javadir}/%{name}-servlet-%{servletspec}*.jar
 %{_javadir}/%{name}-servlet-api.jar
 %{_mavendepmapfragdir}/%{name}-servlet-api
 %{_mavenpomdir}/JPP-%{name}-servlet-api.pom
 
 %files el-%{elspec}-api
-%defattr(-,root,root,-)
 %{_javadir}/%{name}-el-%{elspec}-api.jar
 %{_javadir}/%{name}-el-api.jar
 %{_javadir}/%{name}/%{name}-el-%{elspec}-api.jar
 %{_mavenpomdir}/JPP-%{name}-el-api.pom
 
 %files webapps
-%defattr(0664,root,tomcat,0775)
 %{appdir}/ROOT
 %{appdir}/examples
 %{appdir}/sample
-
