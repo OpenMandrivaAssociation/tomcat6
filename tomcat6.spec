@@ -29,8 +29,7 @@
 #
 
 # https://qa.mandriva.com/show_bug.cgi?id=64975
-%define my_cp			/bin/cp
-%define my_tmppath		/var/tmp
+%define _tmpdir			/var/tmp
 
 %global jspspec 2.1
 %global major_version 6
@@ -286,14 +285,14 @@ zip -u output/build/lib/jsp-api.jar META-INF/MANIFEST.MF
 # move things into place
 # First copy supporting libs to tomcat lib
 pushd output/build
-    %{my_cp} -a bin/*.{jar,xml} %{buildroot}%{bindir}
-    %{my_cp} %{SOURCE10} conf/log4j.properties
-    %{my_cp} -a conf/*.{policy,properties,xml} %{buildroot}%{confdir}
-    %{my_cp} -a lib/*.jar %{buildroot}%{libdir}
-    %{my_cp} -a webapps/* %{buildroot}%{appdir}
+    %{__cp} -a bin/*.{jar,xml} %{buildroot}%{bindir}
+    %{__cp} %{SOURCE10} conf/log4j.properties
+    %{__cp} -a conf/*.{policy,properties,xml} %{buildroot}%{confdir}
+    %{__cp} -a lib/*.jar %{buildroot}%{libdir}
+    %{__cp} -a webapps/* %{buildroot}%{appdir}
 popd
 # javadoc
-%{my_cp} -a output/dist/webapps/docs/api/* %{buildroot}%{_javadocdir}/%{name}
+%{__cp} -a output/dist/webapps/docs/api/* %{buildroot}%{_javadocdir}/%{name}
 
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
    -e "s|\@\@\@TCTEMP\@\@\@|%{tempdir}|g" \
@@ -390,23 +389,23 @@ done
 # we won't install dbcp, juli-adapters and juli-extras pom files
 for pom in catalina.pom jasper-el.pom jasper.pom \
            catalina-ha.pom ; do
-    %{my_cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-$pom
+    %{__cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-$pom
     base=`basename $pom .pom`
     %add_to_maven_depmap org.apache.tomcat $base %{version} JPP/%{name} $base
 done
 
 # servlet-api jsp-api and el-api are not in tomcat6 subdir, since they are widely re-used elsewhere
 for pom in jsp-api.pom servlet-api.pom el-api.pom;do
-    %{my_cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP-%{name}-$pom
+    %{__cp} -a $pom %{buildroot}%{_mavenpomdir}/JPP-%{name}-$pom
     base=`basename $pom .pom`
     %add_to_maven_depmap org.apache.tomcat $base %{version} JPP %{name}-$base
 done
 
 # two special pom where jar files have different names
-%{my_cp} -a tribes.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-catalina-tribes.pom
+%{__cp} -a tribes.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-catalina-tribes.pom
 %add_to_maven_depmap org.apache.tomcat tribes %{version} JPP/%{name} catalina-tribes
 
-%{my_cp} -a juli.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-tomcat-juli.pom
+%{__cp} -a juli.pom %{buildroot}%{_mavenpomdir}/JPP.%{name}-tomcat-juli.pom
 %add_to_maven_depmap org.apache.tomcat juli %{version} JPP/%{name} tomcat-juli
 
 
@@ -418,9 +417,9 @@ done
 # Save the conf, app, and lib dirs
 # due to rbgz 640686. Copy them to the _tmppath so we don't pollute
 # the tomcat file structure
-[ -d %{appdir} ] && %{my_cp} -rp %{appdir} %{my_tmppath}/%{name}-webapps.bak || :
-[ -d %{confdir} ] && %{my_cp} -rp %{confdir} %{my_tmppath}/%{name}-confdir.bak || :
-[ -d %{libdir}  ] && %{my_cp} -rp %{libdir} %{my_tmppath}/%{name}-libdir.bak || :
+[ -d %{appdir} ] && %{__cp} -rp %{appdir} %{_tmpdir}/%{name}-webapps.bak || :
+[ -d %{confdir} ] && %{__cp} -rp %{confdir} %{_tmpdir}/%{name}-confdir.bak || :
+[ -d %{libdir}  ] && %{__cp} -rp %{libdir} %{_tmpdir}/%{name}-libdir.bak || :
 
 %post
 # install but don't activate
@@ -444,23 +443,23 @@ done
 # move the temporary backups to the correct tomcat directory
 # due to rhbz 640686
 %posttrans
-if [ -d %{my_tmppath}/%{name}-webapps.bak ]; then
-  for f in `ls %{my_tmppath}/%{name}-webapps.bak`; do
-    %{my_cp} -rp %{my_tmppath}/%{name}-webapps.bak/$f %{appdir}
+if [ -d %{_tmpdir}/%{name}-webapps.bak ]; then
+  for f in `ls %{_tmpdir}/%{name}-webapps.bak`; do
+    %{__cp} -rp %{_tmpdir}/%{name}-webapps.bak/$f %{appdir}
   done
-  %{__rm} -rf %{my_tmppath}/%{name}-webapps.bak
+  %{__rm} -rf %{_tmpdir}/%{name}-webapps.bak
 fi
-if [ -d %{my_tmppath}/%{name}-libdir.bak ]; then
-  for f in `ls %{my_tmppath}/%{name}-libdir.bak`; do
-    %{my_cp} -rp %{my_tmppath}/%{name}-libdir.bak/$f %{libdir}
+if [ -d %{_tmpdir}/%{name}-libdir.bak ]; then
+  for f in `ls %{_tmpdir}/%{name}-libdir.bak`; do
+    %{__cp} -rp %{_tmpdir}/%{name}-libdir.bak/$f %{libdir}
   done
-  %{__rm} -rf %{my_tmppath}/%{name}-libdir.bak
+  %{__rm} -rf %{_tmpdir}/%{name}-libdir.bak
 fi
-if [ -d %{my_tmppath}/%{name}-confdir.bak ]; then
-  for f in `ls %{my_tmppath}/%{name}-confdir.bak`; do
-    %{my_cp} -rp %{my_tmppath}/%{name}-confdir.bak/$f %{confdir}
+if [ -d %{_tmpdir}/%{name}-confdir.bak ]; then
+  for f in `ls %{_tmpdir}/%{name}-confdir.bak`; do
+    %{__cp} -rp %{_tmpdir}/%{name}-confdir.bak/$f %{confdir}
   done
-  %{__rm} -rf %{my_tmppath}/%{name}-confdir.bak
+  %{__rm} -rf %{_tmpdir}/%{name}-confdir.bak
 fi
 
 %preun
