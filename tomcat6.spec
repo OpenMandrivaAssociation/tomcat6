@@ -82,6 +82,7 @@ BuildArch:     noarch
 
 BuildRequires: ant
 BuildRequires: ant-nodeps
+BuildRequires: java-rpmbuild
 BuildRequires: ecj
 BuildRequires: findutils
 BuildRequires: apache-commons-collections
