@@ -514,7 +514,7 @@ fi
 %attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/*.properties
 %attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/context.xml
 %attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/server.xml
-%attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/log4j.properties
+#%%attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/log4j.properties
 %attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/tomcat-users.xml
 %attr(0666,tomcat,tomcat) %config(noreplace) %{confdir}/web.xml
 %attr(0775,root,tomcat) %dir %{cachedir}
