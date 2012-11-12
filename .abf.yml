@@ -1,0 +1,12 @@
+sources:
+  "apache-tomcat-6.0.32-src.tar.gz:"	ec94c511e54da2b02dd2ba45b9fd1703d5771a45
+  "jsp-api-OSGi-MANIFEST.MF:"	a98dd2d34c84aec1efe0c3abc91dcdc658c05c70
+  "servlet-api-OSGi-MANIFEST.MF:"	89b301fda05a5f9c11001cafaf82da10c34c0510
+  "tomcat6-6.0.conf:"	b4911c46373989327003fae3f899c7a444a8751b
+  "tomcat6-6.0-digest.script:"	7c34de972982f96e605802d53a0a0d0c1e15a75d
+  "tomcat6-6.0.init:"	b5287dd1372eb70351da428a1d02144369e1b2f0
+  "tomcat6-6.0-log4j.properties:"	3bab04cc39cb885bb8780f062412f6a746580578
+  "tomcat6-6.0.logrotate:"	0d9555935cfcf4861f0220f8b2394729af612869
+  "tomcat6-6.0.sysconfig:"	b21e0b13a77ee806e96012d4ec228af143740a96
+  "tomcat6-6.0-tool-wrapper.script:"	2aa8c073c5a3f50bbd3e870c754aa1affff31a87
+  "tomcat6-6.0.wrapper:"	16815e937a24b88861b99895f638da0225047240
