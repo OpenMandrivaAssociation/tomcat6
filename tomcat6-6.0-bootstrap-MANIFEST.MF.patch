@@ -1,5 +1,5 @@
---- res/META-INF/bootstrap.jar.manifest.orig	2010-04-06 10:11:09.000000000 -0600
-+++ res/META-INF/bootstrap.jar.manifest	2010-04-06 10:45:56.000000000 -0600
+--- res/META-INF/bootstrap.jar.manifest.orig	2010-03-09 18:09:57.000000000 +0100
++++ res/META-INF/bootstrap.jar.manifest	2010-03-18 05:17:16.000000000 +0100
 @@ -1,6 +1,5 @@
  Manifest-Version: 1.0
  Main-Class: org.apache.catalina.startup.Bootstrap
@@ -7,3 +7,10 @@
  Specification-Title: Apache Tomcat Bootstrap
  Specification-Version: @VERSION_MAJOR_MINOR@
  Specification-Vendor: Apache Software Foundation
+@@ -8,4 +7,4 @@
+ Implementation-Version: @VERSION@
+ Implementation-Vendor: Apache Software Foundation
+ X-Compile-Source-JDK: @source.jdk@
+-X-Compile-Target-JDK: @target.jdk@
+\ No newline at end of file
++X-Compile-Target-JDK: @target.jdk@
