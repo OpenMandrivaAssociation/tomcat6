@@ -54,7 +54,7 @@
 Name: tomcat6
 Epoch: 0
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 0.%mkrel 2
+Release: 0.3
 Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group: Development/Java
@@ -78,7 +78,7 @@ BuildRequires: ant
 BuildRequires: ant-trax
 BuildRequires: ecj
 BuildRequires: findutils
-BuildRequires: jakarta-commons-collections
+BuildRequires: commons-collections
 BuildRequires: jakarta-commons-daemon
 BuildRequires: java-1.6.0-devel
 BuildRequires: jpackage-utils >= 0:1.7.0
@@ -143,9 +143,9 @@ Summary: Libraries needed to run the Tomcat Web container
 Requires: %{name}-jsp-%{jspspec}-api = %{epoch}:%{version}-%{release}
 Requires: %{name}-servlet-%{servletspec}-api = %{epoch}:%{version}-%{release}
 Requires(post): ecj
-Requires(post): jakarta-commons-collections-tomcat5
-Requires(post): jakarta-commons-dbcp-tomcat5
-Requires(post): jakarta-commons-pool-tomcat5
+Requires(post): jakarta-commons-collections
+Requires(post): jakarta-commons-dbcp
+Requires(post): jakarta-commons-pool
 Requires(preun): coreutils
 
 %description lib
@@ -338,8 +338,8 @@ popd
     %{_javadir}/%{name}-jsp-%{jspspec}-api.jar 20100
 
 %post lib
-%{_bindir}/build-jar-repository %{libdir} commons-collections-tomcat5 \
-    commons-dbcp-tomcat5 commons-pool-tomcat5 ecj 2>&1
+%{_bindir}/build-jar-repository %{libdir} commons-collections \
+    commons-dbcp commons-pool ecj 2>&1
 
 %post servlet-%{servletspec}-api
 %{_sbindir}/update-alternatives --install %{_javadir}/servlet.jar servlet \
@@ -356,9 +356,9 @@ popd
 
 %preun lib
 if [ "$1" = "0" ]; then
-    %{__rm} -f %{libdir}/\[commons-collections-tomcat5\].jar \
-        %{libdir}/\[commons-dbcp-tomcat5\].jar \
-        %{libdir}/\[commons-pool-tomcat5\].jar \
+    %{__rm} -f %{libdir}/\[commons-collections\].jar \
+        %{libdir}/\[commons-dbcp\].jar \
+        %{libdir}/\[commons-pool\].jar \
         %{libdir}/\[ecj\].jar >/dev/null 2>&1
 fi
 
