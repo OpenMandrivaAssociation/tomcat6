@@ -33,7 +33,7 @@
 %define jspspec 2.1
 %define major_version 6
 %define minor_version 0
-%define micro_version 26
+%define micro_version 37
 %define packdname apache-tomcat-%{version}-src
 %define servletspec 2.5
 %define tcuid 91
@@ -70,7 +70,6 @@ Source6: %{name}-%{major_version}.%{minor_version}-digest.script
 Source7: %{name}-%{major_version}.%{minor_version}-tool-wrapper.script
 Patch0: %{name}-%{major_version}.%{minor_version}-bootstrap-MANIFEST.MF.patch
 Patch1: %{name}-%{major_version}.%{minor_version}-tomcat-users-webapp.patch
-Patch2: %{name}-%{major_version}.%{minor_version}-CVE-2010-2227.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
@@ -184,7 +183,7 @@ popd
 
 %build
 export CLASSPATH=
-export OPT_JAR_LIST="ant/ant-trax"
+#export OPT_JAR_LIST=""
 pushd %{packdname}
     # we don't care about the tarballs and we're going to replace
     # tomcat-dbcp.jar with jakarta-commons-{collections,dbcp,pool}-tomcat5.jar
