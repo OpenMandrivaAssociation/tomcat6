@@ -54,7 +54,7 @@
 Name: tomcat6
 Epoch: 0
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 0.3
+Release: 1
 Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group: Development/Java
@@ -76,6 +76,7 @@ BuildArch: noarch
 BuildRequires: ant
 BuildRequires: ecj
 BuildRequires: findutils
+BuildRequires:	apache-commons-dbcp
 BuildRequires: commons-collections
 BuildRequires: jakarta-commons-daemon
 BuildRequires: java-1.6.0-devel
@@ -86,7 +87,7 @@ Requires(pre): shadow-utils
 Requires(pre): shadow-utils
 Requires: jakarta-commons-daemon
 Requires: jakarta-commons-logging
-Requires: java-1.6.0
+Requires: java-1.7.0
 Requires: procps
 Requires: %{name}-lib = %{epoch}:%{version}-%{release}
 
@@ -142,8 +143,8 @@ Requires: %{name}-jsp-%{jspspec}-api = %{epoch}:%{version}-%{release}
 Requires: %{name}-servlet-%{servletspec}-api = %{epoch}:%{version}-%{release}
 Requires(post): ecj
 Requires(post): jakarta-commons-collections
-Requires(post): jakarta-commons-dbcp
-Requires(post): jakarta-commons-pool
+Requires(post): apache-commons-dbcp
+Requires(post): apache-commons-pool
 Requires(preun): coreutils
 
 %description lib
@@ -178,7 +179,6 @@ find . -type f \( -name "*.bat" -o -name "*.class" -o -name Thumbs.db -o -name "
 pushd %{packdname}
 %patch0 -p0
 %patch1 -p0
-%patch2 -p0
 popd
 
 %build
@@ -194,10 +194,10 @@ pushd %{packdname}
         -Dbuild.compiler="modern" \
         -Dcommons-collections.jar="$(build-classpath commons-collections)" \
         -Dcommons-daemon.jar="$(build-classpath commons-daemon)" \
-        -Dcommons-daemon.jsvc.tar.gz="HACK" \
+        -Dcommons-daemon.native.src.tgz="HACK" \
         -Djasper-jdt.jar="$(build-classpath ecj)" \
         -Djdt.jar="$(build-classpath ecj)" \
-        -Dtomcat-dbcp.jar="HACK" \
+        -Dtomcat-dbcp.jar="$(build-classpath apache-commons-dbcp)" \
         -Dtomcat-native.tar.gz="HACK" \
         -Dversion="%{version}" \
         -Dversion.build="%{micro_version}"
@@ -209,9 +209,7 @@ pushd %{packdname}
     %{__rm} output/build/bin/commons-daemon.jar \
             output/build/lib/ecj.jar
     # remove the cruft we created
-    %{__rm} output/build/bin/HACK \
-            output/build/bin/tomcat-native.tar.gz \
-            output/build/lib/HACK
+    %{__rm} output/build/bin/tomcat-native.tar.gz 
 popd
 pushd %{packdname}/output/dist/src/webapps/docs/appdev/sample/src
 %{__mkdir_p} ../web/WEB-INF/classes
