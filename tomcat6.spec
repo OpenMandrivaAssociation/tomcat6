@@ -75,7 +75,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
 BuildRequires: ant
-BuildRequires: ant-trax
 BuildRequires: ecj
 BuildRequires: findutils
 BuildRequires: commons-collections
