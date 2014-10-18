@@ -1,2 +1,3 @@
 sources:
-  "apache-tomcat-6.0.37-src.tar.gz": 8c8b8b4d42ad893e97ab5d7c52ce80fd8719406a
+  apache-tomcat-6.0.37-src.tar.gz: 8c8b8b4d42ad893e97ab5d7c52ce80fd8719406a
+  apache-tomcat-6.0.41-src.tar.gz: fefd6d9ae5ea690fd64179b8ab0440a830ba4856
