@@ -33,7 +33,7 @@
 %define jspspec 2.1
 %define major_version 6
 %define minor_version 0
-%define micro_version 41
+%define micro_version 43
 %define packdname apache-tomcat-%{version}-src
 %define servletspec 2.5
 %define tcuid 91
@@ -54,7 +54,7 @@
 Name: tomcat6
 Epoch: 0
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 2
+Release: 1
 Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec} API
 
 Group: Development/Java
@@ -80,9 +80,8 @@ BuildRequires:	apache-commons-dbcp
 BuildRequires: apache-commons-collections
 BuildRequires: apache-commons-daemon
 BuildRequires: java-1.8.0-devel
-BuildRequires: jpackage-utils >= 0:1.7.0
+BuildRequires: jpackage-utils
 BuildRequires: junit
-BuildRequires: java-rpmbuild
 Requires(pre): shadow-utils
 Requires(pre): shadow-utils
 Requires: apache-commons-daemon
