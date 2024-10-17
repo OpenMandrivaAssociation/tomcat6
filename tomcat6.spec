@@ -59,7 +59,7 @@ Summary: Apache Servlet/JSP Engine, RI for Servlet %{servletspec}/JSP %{jspspec}
 
 Group: Development/Java
 License: ASL 2.0
-URL: http://tomcat.apache.org/
+URL: https://tomcat.apache.org/
 Source0: http://www.apache.org/dist/tomcat/tomcat-6/v%{version}/src/%{packdname}.tar.gz
 Source1: %{name}-%{major_version}.%{minor_version}.conf
 Source2: %{name}-%{major_version}.%{minor_version}.init
